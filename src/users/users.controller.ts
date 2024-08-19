@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserSignupDto } from "./dto/user-signup.dto";
 import { UserSignInDto } from "./dto/user-signIn.dto";
+import { CurrentUserDecorators } from '../utils/decorators/current-user.decorators';
+import { UserEntity } from './entities/user.entity';
+import { AuthenticationGuard } from '../utils/guards/authentication.guard';
 
 @Controller('users')
 export class UsersController {
@@ -14,17 +17,19 @@ export class UsersController {
     return this.usersService.signup(body);
   }
   @Post('sign-in')
-  signIn(@Body() body:UserSignInDto){
-    return this.usersService.signIn(body);
+  async signIn(@Body() body:UserSignInDto){
+     const user=await this.usersService.signIn(body);
+     const accessToken=await this.usersService.accessToken(user);
+     return {accessToken,user}
   }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
 
   @Get()
   findAll() {
+    return this.usersService.findAll();
+  }
+  @Get("JJ/JJ")
+  findAllS() {
     return this.usersService.findAll();
   }
 
@@ -41,5 +46,10 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+@UseGuards(AuthenticationGuard)
+  @Get("me/me")
+  getProfile(@CurrentUserDecorators() currentUser:UserEntity){
+    return currentUser;
   }
 }

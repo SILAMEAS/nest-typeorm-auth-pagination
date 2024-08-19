@@ -1,12 +1,13 @@
 import { DataSource, DataSourceOptions } from "typeorm";
-
+import 'dotenv/config';
+import * as process from 'process';
 export const dataSourceOptions:DataSourceOptions={
   type:"postgres",
-  host: "ep-morning-hall-a1968o7x-pooler.ap-southeast-1.aws.neon.tech",
-  port:5432,
-  username: "nestjs_owner",
-  password: "VxW6gRtj4OXb",
-  database: "nestOrm",
+  host: process.env.DB_HOST,
+  port:+process.env.DB_PORT,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations:['dist/db/migrations/*{.ts,.js}'],
   logging:false,
