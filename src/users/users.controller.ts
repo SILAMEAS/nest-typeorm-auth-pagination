@@ -1,39 +1,34 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Query } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { UserSignupDto } from "./dto/user-signup.dto";
-import { UserSignInDto } from "./dto/user-signIn.dto";
-import { CurrentUserDecorators } from "../utils/decorators/current-user.decorators";
 import { UserEntity } from "./entities/user.entity";
-import { AuthenticationGuard } from "../utils/guards/authentication.guard";
+import { PageOptionsDto } from "../utils/dtos/page.option.dto";
+import { PageDto } from "../utils/dto/page.dto";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
+@ApiTags('Users')
+@ApiBearerAuth('access-token')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post('sign-up')
-  signup(@Body() body:UserSignupDto){
-    return this.usersService.signup(body);
+  @Get('')
+  @HttpCode(HttpStatus.OK)
+  findAll(
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<UserEntity>> {
+    console.log('pageOptionsDto',pageOptionsDto);
+    return this.usersService.findAll(pageOptionsDto);
   }
-  @Post('sign-in')
-  async signIn(@Body() body:UserSignInDto){
-     const user=await this.usersService.signIn(body);
-     const accessToken=await this.usersService.accessToken(user);
-     return {accessToken,user}
-  }
-
-
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-  @Get("JJ/JJ")
-  findAllS() {
-    return this.usersService.findAll();
-  }
+  /** Library Pagination
+   @Get()
+    findAllWithL( @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+   @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,): Promise<Pagination<UserEntity>> {
+    return this.usersService.paginate({limit,page});
+    }
+   * */
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.usersService.findOne(+id);
   }
 
@@ -45,10 +40,5 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
-  }
-@UseGuards(AuthenticationGuard)
-  @Get("me/me")
-  getProfile(@CurrentUserDecorators() currentUser:UserEntity){
-    return currentUser;
   }
 }
