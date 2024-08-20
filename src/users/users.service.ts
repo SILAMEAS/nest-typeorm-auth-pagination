@@ -1,16 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { UserSignupDto } from './dto/user-signup.dto';
-import * as bcrypt from 'bcrypt';
-import { hash } from 'bcrypt';
-import { UserSignInDto } from './dto/user-signIn.dto';
-import { sign } from 'jsonwebtoken';
-import 'dotenv/config';
-import * as process from 'process';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { UserEntity } from "./entities/user.entity";
+import { Repository } from "typeorm";
+import { UserSignupDto } from "./dto/user-signup.dto";
+import * as bcrypt from "bcrypt";
+import { hash } from "bcrypt";
+import { UserSignInDto } from "./dto/user-signIn.dto";
+import { sign } from "jsonwebtoken";
+import "dotenv/config";
+import * as process from "process";
 
 @Injectable()
 export class UsersService {
