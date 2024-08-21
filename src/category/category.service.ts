@@ -19,7 +19,8 @@ export class CategoryService {
               private usersService: UsersService) {}
   private queryBuilder = this.categoryEntityRepository.createQueryBuilder("categories");
   async create(createCategoryDto: CreateCategoryDto) {
-     const category=this.categoryEntityRepository.create(createCategoryDto);
+    const user=this.globalStateService.getUserGlobal();
+     const category=this.categoryEntityRepository.create({ ...createCategoryDto,createdBy: user});
     return this.categoryEntityRepository.save(category)
   }
 
