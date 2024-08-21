@@ -7,6 +7,7 @@ import { UsersModule } from "../users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import 'dotenv/config'
 import * as process from "process";
+import { GlobalStateModule } from '../global/global.module';
 
 @Module({
   providers: [ AuthService,
@@ -22,6 +23,7 @@ import * as process from "process";
       secret: process.env.ACCESS_TOKEN_SECERT_KEY,
       signOptions: { expiresIn: process.env.ACCESS_TOKEN_EXP },
     }),
+    GlobalStateModule
   ],
 })
 export class AuthModule {}

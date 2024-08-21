@@ -3,6 +3,8 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import {  RolesDecorator } from '../auth/decorator/role.key.decorator';
+import { Roles } from '../utils/common/user-role.enum';
 @ApiTags('Products')
 @ApiBearerAuth('access-token')
 @Controller('products')
@@ -13,7 +15,7 @@ export class ProductController {
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
-
+  @RolesDecorator(Roles.ADMIN)
   @Get()
   findAll() {
     return this.productService.findAll();

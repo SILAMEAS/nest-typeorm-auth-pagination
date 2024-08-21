@@ -1,7 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Roles } from "../../utils/common/user-role.enum";
 import { AbstractEntity } from "../../utils/abstract/AbstractEntity";
 import { ApiProperty } from "@nestjs/swagger";
+import { ProductEntity } from '../../product/entities/product.entity';
+import { CategoryEntity } from '../../category/entities/category.entity';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity{
@@ -17,4 +19,8 @@ export class UserEntity extends AbstractEntity{
   @Column({type:'enum',enum:Roles,array:true,default:[Roles.USER]})
   @ApiProperty()
   roles:Roles[]
+  @OneToMany(() => ProductEntity, (product) => product.createdBy)
+  products: ProductEntity[];
+  @OneToMany(() => CategoryEntity, (category) => category.createdBy)
+  categories: CategoryEntity[];
 }

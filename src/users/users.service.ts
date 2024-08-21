@@ -12,6 +12,7 @@ import { PageMetaDto } from "../utils/dto/page.meta.dto";
 export class UsersService {
   constructor(@InjectRepository(UserEntity)
   private userRepository: Repository<UserEntity>) {}
+  private queryBuilder = this.userRepository.createQueryBuilder("user");
   /** Library Pagination
    async paginate(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
    const queryBuilder = this.userRepository.createQueryBuilder('users');
@@ -26,26 +27,29 @@ export class UsersService {
   }
   /** -----------------------------------------------  FIND BY EMAIL <NO PASSWORD INCLUDE> -------------------------------- */
   async emailExit(email:string){
-    if(await this.userRepository.findOne({where:{ email }})) throw new BadRequestException("Email is already used by another user")
+    const emailExited=await this.userRepository.findBy({email});
+    if(email&&emailExited) throw new BadRequestException("Email is already used by another user")
   }
   /** -----------------------------------------------  FIND BY EMAIL <PASSWORD INCLUDE> -------------------------------- */
   async findByEmailIncludePassword(email:string):Promise<UserEntity>{
     return await this.userRepository.createQueryBuilder('users').addSelect('users.password').where('users.email=:email',{email}).getOne();
   }
+  /** -----------------------------------------------  Create User -------------------------------- */
   async create(userSignupDto:UserSignupDto){
     let user = this.userRepository.create(userSignupDto);
     user = await this.userRepository.save(user);
     delete user.password;
     return user;
   }
-  async findOne(id: number):Promise<UserEntity> {
+  /** -----------------------------------------------  FIND User By Id -------------------------------- */
+  async findById(id: number):Promise<UserEntity> {
     const user = await this.userRepository.findOneBy({id});
     if(!user) throw new BadRequestException("User not found with this id")
     delete user.password;
     return user;
   }
-
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  /** -----------------------------------------------  Update User -------------------------------- */
+  async update(id: number, updateUserDto: Partial<UpdateUserDto>) {
     await this.emailExit(updateUserDto.email);
     await this.userRepository
       .createQueryBuilder()
@@ -53,26 +57,24 @@ export class UsersService {
       .set(updateUserDto)
       .where("id = :id", { id: id })
       .execute()
-    return await this.findOne(id);
+    return await this.findById(id);
   }
-
+  /** -----------------------------------------------  Delete User By Id -------------------------------- */
   async remove(id: number):Promise<UserEntity> {
-    const user=await this.findOne(id);
+    const user=await this.findById(id);
     return await this.userRepository.remove(user)
   }
-
+  /** -----------------------------------------------  Find All Users -------------------------------- */
   public async findAll(
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<UserEntity>> {
-    const queryBuilder = this.userRepository.createQueryBuilder("user");
-
-    queryBuilder
+    this.queryBuilder
       .orderBy(`user.${pageOptionsDto.orderBy}`, pageOptionsDto.order)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
 
-    const itemCount = await queryBuilder.getCount();
-    const { entities } = await queryBuilder.getRawAndEntities();
+    const itemCount = await this.queryBuilder.getCount();
+    const { entities } = await this.queryBuilder.getRawAndEntities();
 
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 

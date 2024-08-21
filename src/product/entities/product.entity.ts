@@ -1,6 +1,7 @@
 import { AbstractEntity } from "../../utils/abstract/AbstractEntity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CategoryEntity } from "../../category/entities/category.entity";
+import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity('products')
 export class ProductEntity extends AbstractEntity{
@@ -12,4 +13,6 @@ export class ProductEntity extends AbstractEntity{
   price:number
   @ManyToOne(() => CategoryEntity, (category) => category.products)
   category: CategoryEntity;
+  @ManyToOne(() => UserEntity, (user) => user.products)
+  createdBy: CategoryEntity;
 }
