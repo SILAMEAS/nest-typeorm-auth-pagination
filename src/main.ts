@@ -11,7 +11,7 @@ async function bootstrap() {
     whitelist:true
   }));
   const config = new DocumentBuilder()
-    .setTitle('Configuration Nest')
+    .setTitle('Api Application')
     .setDescription('')
     .setVersion('1.0')
     .addTag('')

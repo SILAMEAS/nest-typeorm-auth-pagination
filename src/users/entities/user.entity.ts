@@ -1,4 +1,4 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { Roles } from "../../utils/common/user-role.enum";
 import { AbstractEntity } from "../../utils/abstract/AbstractEntity";
 import { ApiProperty } from "@nestjs/swagger";
