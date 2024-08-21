@@ -24,6 +24,10 @@ export class UsersService {
   async findByEmail(email:string):Promise<UserEntity>{
     return await this.userRepository.findOne({where:{ email }})
   }
+  /** -----------------------------------------------  FIND BY EMAIL <NO PASSWORD INCLUDE> -------------------------------- */
+  async emailExit(email:string){
+    if(await this.userRepository.findOne({where:{ email }})) throw new BadRequestException("Email is already used by another user")
+  }
   /** -----------------------------------------------  FIND BY EMAIL <PASSWORD INCLUDE> -------------------------------- */
   async findByEmailIncludePassword(email:string):Promise<UserEntity>{
     return await this.userRepository.createQueryBuilder('users').addSelect('users.password').where('users.email=:email',{email}).getOne();
@@ -42,9 +46,14 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user=await this.findOne(id);
-     Object.assign(user,updateUserDto);
-    return this.userRepository.save(user);
+    await this.emailExit(updateUserDto.email);
+    await this.userRepository
+      .createQueryBuilder()
+      .update('users')
+      .set(updateUserDto)
+      .where("id = :id", { id: id })
+      .execute()
+    return await this.findOne(id);
   }
 
   async remove(id: number):Promise<UserEntity> {
