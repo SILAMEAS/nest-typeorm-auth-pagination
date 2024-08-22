@@ -11,10 +11,11 @@ import { RolesGuard } from "./auth/role.guard";
 import { GlobalStateModule } from "./global/global.module";
 
 @Module({
-  imports: [TypeOrmModule.forRoot(dataSourceOptions), UsersModule, AuthModule, ThrottlerModule.forRoot([
+  imports: [GlobalStateModule, UsersModule, AuthModule,TypeOrmModule.forRoot(dataSourceOptions),
+     ThrottlerModule.forRoot([
     { name: 'short', ttl: 1000, limit: 1 },
     { name: 'long', ttl: 60000, limit: 100 },
-  ]), ProductModule, CategoryModule, GlobalStateModule],
+  ])],
   controllers: [],
   providers: [
   {
