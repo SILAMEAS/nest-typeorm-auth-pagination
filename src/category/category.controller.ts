@@ -26,7 +26,7 @@ import { CategoryEntity } from './entities/category.entity';
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-@RolesDecorator(Roles.ADMIN)
+  @RolesDecorator(Roles.ADMIN)
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
@@ -43,7 +43,7 @@ export class CategoryController {
   }
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(+id);
+    return this.categoryService.findById(+id);
   }
 
   @Patch(':id')

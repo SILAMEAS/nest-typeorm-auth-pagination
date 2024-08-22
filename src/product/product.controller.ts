@@ -10,12 +10,11 @@ import { Roles } from '../utils/common/user-role.enum';
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-
-  @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
-  }
   @RolesDecorator(Roles.ADMIN)
+  @Post(":categoryId")
+  create(@Body() createProductDto: CreateProductDto,@Param('categoryId') categoryId:number) {
+    return this.productService.create(categoryId,createProductDto);
+  }
   @Get()
   findAll() {
     return this.productService.findAll();

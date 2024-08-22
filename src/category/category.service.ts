@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CategoryEntity } from './entities/category.entity';
-import { GlobalStateService } from '../global/global.service';
-import { PageOptionsDto } from '../utils/dtos/page.option.dto';
-import { PageDto } from '../utils/dto/page.dto';
-import { PageMetaDto } from '../utils/dto/page.meta.dto';
-import { UsersService } from '../users/users.service';
-import { UserEntity } from '../users/entities/user.entity';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { CreateCategoryDto } from "./dto/create-category.dto";
+import { UpdateCategoryDto } from "./dto/update-category.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { CategoryEntity } from "./entities/category.entity";
+import { GlobalStateService } from "../global/global.service";
+import { PageOptionsDto } from "../utils/dtos/page.option.dto";
+import { PageDto } from "../utils/dto/page.dto";
+import { PageMetaDto } from "../utils/dto/page.meta.dto";
+import { UsersService } from "../users/users.service";
+import { ResponseCategoryDto } from "./dto/response-category.dto";
 
 @Injectable()
 export class CategoryService {
@@ -18,10 +18,14 @@ export class CategoryService {
               private globalStateService: GlobalStateService,
               private usersService: UsersService) {}
   private queryBuilder = this.categoryEntityRepository.createQueryBuilder("categories");
-  async create(createCategoryDto: CreateCategoryDto) {
-    const user=this.globalStateService.getUserGlobal();
-     const category=this.categoryEntityRepository.create({ ...createCategoryDto,createdBy: user});
-    return this.categoryEntityRepository.save(category)
+  // ResponseCategoryDto
+  async create(createCategoryDto: CreateCategoryDto):Promise<ResponseCategoryDto> {
+    if(!this.globalStateService.getUserGlobal().id){
+      throw new BadRequestException("createdBy can't be null")
+    }
+     const category=this.categoryEntityRepository.create({ ...createCategoryDto,user: this.globalStateService.getUserGlobal()});
+     const {user,id,name}=await this.categoryEntityRepository.save(category);
+     return  {createdById:user.id,id,name}
   }
 
   // findAll() {
@@ -44,8 +48,12 @@ export class CategoryService {
     return new PageDto(entities, pageMetaDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findById(id: number):Promise<CategoryEntity> {
+    const category = await this.categoryEntityRepository.findOne({where:{id}})
+    if(!category){
+      throw new BadRequestException("not found category with this id")
+    }
+    return category;
   }
   async findByUserId(userId: number, pageOptionsDto: PageOptionsDto):Promise<PageDto<CategoryEntity>> {
     const user=await this.usersService.findById(userId);

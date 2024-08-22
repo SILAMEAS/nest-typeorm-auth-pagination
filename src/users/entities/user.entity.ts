@@ -21,6 +21,6 @@ export class UserEntity extends AbstractEntity{
   roles:Roles[]
   @OneToMany(() => ProductEntity, (product) => product.createdBy)
   products: ProductEntity[];
-  @OneToMany(() => CategoryEntity, (category) => category.createdBy)
+  @OneToMany(() => CategoryEntity, (category) => category.user)
   categories: CategoryEntity[];
 }

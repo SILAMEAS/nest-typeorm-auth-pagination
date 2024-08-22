@@ -9,5 +9,5 @@ export class CategoryEntity extends AbstractEntity{
   @OneToMany(() => ProductEntity, (product) => product.category)
   products: ProductEntity[];
   @ManyToOne(() => UserEntity, (user) => user.categories)
-  createdBy: UserEntity;
+  user: UserEntity;
 }
