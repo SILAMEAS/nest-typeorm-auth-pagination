@@ -4,6 +4,7 @@ import { UserSignupDto } from "../users/dto/user-signup.dto";
 import { UserSignInDto } from "../users/dto/user-signIn.dto";
 import { AuthService } from "./auth.service";
 import { ApiTags } from "@nestjs/swagger";
+import { GlobalStateService } from '../global/global.service';
 @ApiTags("Auth")
 @Controller('')
 export class AuthController {
@@ -12,7 +13,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('sign-up')
   signup(@Body(ValidationPipe) body:UserSignupDto){
-    return this.authService.signup(body);
+    return this.authService.signup(body)
   }
   @Public()
   @Post('sign-in')

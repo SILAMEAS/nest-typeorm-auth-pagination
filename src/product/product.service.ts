@@ -22,11 +22,9 @@ export class ProductService {
   }
   private queryBuilder = this.productEntityRepository.createQueryBuilder("products");
  async create(categoryId:number,createProductDto: CreateProductDto):Promise<ResponseProduct> {
-    if(!this.globalStateService.getUserGlobal().id){
-      throw new BadRequestException("createdBy can't be null")
-    }
+   await this.duplicateName(createProductDto.name);
     const category= await this.categoryService.findById(categoryId);
-    const user=this.globalStateService.getUserGlobal();
+    const user=this.globalStateService.validateUserLogin();
     const product = this.productEntityRepository.create({...createProductDto,createdBy:user,category:category})
    await this.productEntityRepository.save(product)
     return { createdById:user.id,categoryId:category.id,name:product.name,qty:product.qty,price:product.price};
@@ -58,5 +56,13 @@ export class ProductService {
 
   remove(id: number) {
     return `This action removes a #${id} product`;
+  }
+
+  async duplicateName(name: string) {
+    const category = await this.productEntityRepository.findOne({where:{name}})
+    if(category){
+      throw new BadRequestException("Duplicate name of product");
+    }
+    return true;
   }
 }

@@ -12,7 +12,7 @@ import { GlobalStateService } from '../global/global.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService:UsersService,private readonly globalService:GlobalStateService) {}
+  constructor(private readonly usersService:UsersService) {}
   /** -----------------------------------------------  SIGN UP-------------------------------- */
   async signup(userSignupDto:UserSignupDto):Promise<UserEntity>{
     const userExit = await this.usersService.findByEmail(userSignupDto.email);
@@ -26,7 +26,6 @@ export class AuthService {
     if (!userFound) throw new BadRequestException('User not found with this email!');
     if(!await bcrypt.compare(userLogin.password,userFound.password))
       throw new BadRequestException('Invalid password!');
-    this.globalService.setUserGoble(userFound);
     return userFound;
   }
   /** -----------------------------------------------  ACCESS TOKEN  -------------------------------- */

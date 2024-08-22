@@ -11,10 +11,13 @@ import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from "./decorator/public.decorator";
 import * as process from "process";
 import 'dotenv/config'
+import { UsersService } from '../users/users.service';
+import { GlobalStateService } from '../global/global.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService, private reflector: Reflector) {}
+  constructor(private jwtService: JwtService, private reflector: Reflector,private usersService:UsersService,
+              private globalStateService:GlobalStateService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -36,6 +39,8 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret:process.env.ACCESS_TOKEN_SECERT_KEY,
       });
+      const findUserByEmail=await this.usersService.findByEmail(payload.email);
+      this.globalStateService.setUserGoble(findUserByEmail);
       exp=payload.exp;
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserEntity } from '../users/entities/user.entity';
 import { GlobalStateModule } from './global.module';
 
@@ -21,6 +21,12 @@ export class GlobalStateService {
 
   getUserGlobal(): UserEntity {
     return this.user;
+  }
+  validateUserLogin(): UserEntity {
+    if(this.user){
+      return this.user;
+    }
+    throw new BadRequestException("createdBy can't be null! please login again")
   }
 }
 

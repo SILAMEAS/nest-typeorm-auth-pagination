@@ -18,19 +18,13 @@ export class CategoryService {
               private globalStateService: GlobalStateService,
               private usersService: UsersService) {}
   private queryBuilder = this.categoryEntityRepository.createQueryBuilder("categories");
-  // ResponseCategoryDto
   async create(createCategoryDto: CreateCategoryDto):Promise<ResponseCategoryDto> {
-    if(!this.globalStateService.getUserGlobal().id){
-      throw new BadRequestException("createdBy can't be null")
-    }
-     const category=this.categoryEntityRepository.create({ ...createCategoryDto,user: this.globalStateService.getUserGlobal()});
+    await this.duplicateName(createCategoryDto.name);
+     const category=this.categoryEntityRepository.create({ ...createCategoryDto,user: this.globalStateService.validateUserLogin()});
      const {user,id,name}=await this.categoryEntityRepository.save(category);
      return  {createdById:user.id,id,name}
   }
 
-  // findAll() {
-  //   return this.categoryEntityRepository.find()
-  // }
   /** -----------------------------------------------  Find All Users -------------------------------- */
   public async findAll(
     pageOptionsDto: PageOptionsDto,
@@ -51,9 +45,16 @@ export class CategoryService {
   async findById(id: number):Promise<CategoryEntity> {
     const category = await this.categoryEntityRepository.findOne({where:{id}})
     if(!category){
-      throw new BadRequestException("not found category with this id")
+      throw new BadRequestException("Category not found")
     }
     return category;
+  }
+  async duplicateName(name: string) {
+    const category = await this.categoryEntityRepository.findOne({where:{name}})
+    if(category){
+      throw new BadRequestException("Duplicate name of category");
+    }
+    return true;
   }
   async findByUserId(userId: number, pageOptionsDto: PageOptionsDto):Promise<PageDto<CategoryEntity>> {
     const user=await this.usersService.findById(userId);
@@ -80,7 +81,8 @@ export class CategoryService {
     return `This action updates a #${id} category`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number):Promise<CategoryEntity> {
+    const category =await this.findById(id);
+    return this.categoryEntityRepository.remove(category)
   }
 }

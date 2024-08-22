@@ -5,7 +5,7 @@ import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity('products')
 export class ProductEntity extends AbstractEntity{
-  @Column()
+  @Column({unique:true,nullable:false})
   name:string
   @Column({type:'decimal',default:0})
   qty:number
