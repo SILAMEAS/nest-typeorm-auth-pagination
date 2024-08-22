@@ -12,7 +12,7 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
   @RolesDecorator(Roles.ADMIN)
   @Post(":categoryId")
-  create(@Body() createProductDto: CreateProductDto,@Param('categoryId') categoryId:number) {
+  create(@Param('categoryId') categoryId:number,@Body() createProductDto: CreateProductDto) {
     return this.productService.create(categoryId,createProductDto);
   }
   @Get()

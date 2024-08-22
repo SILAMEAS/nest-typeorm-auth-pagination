@@ -4,14 +4,14 @@ import { dataSourceOptions } from "../db/data-source";
 import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
 import { ThrottlerModule } from "@nestjs/throttler";
-import { ProductModule } from "./product/product.module";
-import { CategoryModule } from "./category/category.module";
 import { APP_GUARD } from "@nestjs/core";
 import { RolesGuard } from "./auth/role.guard";
 import { GlobalStateModule } from "./global/global.module";
+import { CategoryModule } from "./category/category.module";
+import { ProductModule } from "./product/product.module";
 
 @Module({
-  imports: [GlobalStateModule, UsersModule, AuthModule,TypeOrmModule.forRoot(dataSourceOptions),
+  imports: [GlobalStateModule,CategoryModule, UsersModule,ProductModule, AuthModule,TypeOrmModule.forRoot(dataSourceOptions),
      ThrottlerModule.forRoot([
     { name: 'short', ttl: 1000, limit: 1 },
     { name: 'long', ttl: 60000, limit: 100 },

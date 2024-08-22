@@ -12,16 +12,19 @@ import { CategoryService } from "../category/category.service";
 export class ProductService {
   constructor(@InjectRepository(ProductEntity) private productEntityRepository:Repository<ProductEntity>,
   private globalStateService: GlobalStateService,
-              private categoryService: CategoryService) {
+              // private usersService: UsersService
+  //             private categoryService: CategoryService
+  ) {
   }
- async create(categoryId:number,createProductDto: CreateProductDto):Promise<ProductEntity> {
-    if(!this.globalStateService.getUserGlobal().id){
-      throw new BadRequestException("createdBy can't be null")
-    }
-    const category= await this.categoryService.findById(categoryId);
-    const user=this.globalStateService.getUserGlobal();
-    const product= await this.productEntityRepository.create({...createProductDto,createdBy:user,category:category})
-    return this.productEntityRepository.save(product);
+ async create(categoryId:number,createProductDto: CreateProductDto) {
+    // if(!this.globalStateService.getUserGlobal().id){
+    //   throw new BadRequestException("createdBy can't be null")
+    // }
+    // const category= await this.categoryService.findById(categoryId);
+    // const user=this.globalStateService.getUserGlobal();
+    // const product= await this.productEntityRepository.create({...createProductDto,createdBy:user,category:category})
+    // return this.productEntityRepository.save(product);
+   return null
   }
 
   findAll() {
