@@ -22,7 +22,7 @@ import { ProductModule } from "./product/product.module";
     provide: APP_GUARD,
     useClass: RolesGuard,
   },
-  ],
+  ]
 })
 export class AppModule  {
 }

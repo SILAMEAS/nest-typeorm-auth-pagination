@@ -1,10 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from "@nestjs/common";
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import {  RolesDecorator } from '../auth/decorator/role.key.decorator';
 import { Roles } from '../utils/common/user-role.enum';
+import { PageOptionsDto } from "../utils/dtos/page.option.dto";
+import { PageDto } from "../utils/dto/page.dto";
+import { UserEntity } from "../users/entities/user.entity";
+import { ProductEntity } from "./entities/product.entity";
 @ApiTags('Products')
 @ApiBearerAuth('access-token')
 @Controller('products')
@@ -16,8 +20,10 @@ export class ProductController {
     return this.productService.create(categoryId,createProductDto);
   }
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAll(
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<ProductEntity>> {
+    return this.productService.findAll(pageOptionsDto);
   }
 
   @Get(':id')
