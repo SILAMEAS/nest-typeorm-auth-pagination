@@ -1,4 +1,4 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer ,OnGatewayConnection,OnGatewayDisconnect} from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 
 @WebSocketGateway(3002, {
@@ -6,20 +6,26 @@ import { Server, Socket } from "socket.io";
     origin: '*', // Adjust this according to your needs
   },
 })
-export class ChatGateway {
+export class ChatGateway implements OnGatewayConnection,OnGatewayDisconnect {
+
   @WebSocketServer()
   server: Server;
+  handleConnection(client: Socket) {
+    console.log('new user connected ...',client.id);
+    client.emit('user-joined',{
+      message:`User Joined the chat : ${client.id}`
+    } as any)
+  }
+  handleDisconnect(client: Socket) {
+    console.log('user disconnected ...',client.id);
+    this.server.emit('user-left',{
+      message:`User Left the chat : ${client.id}`
+    } as any)
+    client.to('roomName').emit('')
+  }
 
   @SubscribeMessage('newMessage')
-  handleNewMessage(@ConnectedSocket() client: Socket, @MessageBody() message: any): void {
-    console.log(client);
-    client.emit('reply', 'this is a new message');
-    client.broadcast.emit('reply', 'broadcasting')
-    this.server.emit('reply','broadcasting')
+  handleNewMessage(@ConnectedSocket() client: Socket, @MessageBody() message: string) {
+   this.server.emit('message',message); // Broadcast the message to all clients
   }
 }
-
-/** socket.on()
-  io.emit()
- socket.emit()
- * */
