@@ -1,14 +1,13 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { UsersService } from "../users/users.service";
-import { UserSignupDto } from "../users/dto/user-signup.dto";
-import { UserEntity } from "../users/entities/user.entity";
-import * as bcrypt from "bcrypt";
-import { hash } from "bcrypt";
-import { UserSignInDto } from "../users/dto/user-signIn.dto";
-import { sign } from "jsonwebtoken";
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
+import { UserSignupDto } from '../users/dto/user-signup.dto';
+import { UserEntity } from '../users/entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { hash } from 'bcrypt';
+import { UserSignInDto } from '../users/dto/user-signIn.dto';
+import { sign } from 'jsonwebtoken';
 import 'dotenv/config';
 import * as process from 'process';
-import { GlobalStateService } from '../global/global.service';
 
 @Injectable()
 export class AuthService {
