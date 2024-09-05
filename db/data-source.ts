@@ -1,6 +1,9 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 import 'dotenv/config';
 import * as process from 'process';
+import { CategoryEntity } from "../src/category/entities/category.entity";
+import { UserEntity } from "../src/users/entities/user.entity";
+import { ProductEntity } from "../src/product/entities/product.entity";
 export const dataSourceOptions:DataSourceOptions={
   type:"postgres",
   host: process.env.DB_HOST,
@@ -8,7 +11,7 @@ export const dataSourceOptions:DataSourceOptions={
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: ['dist/**/*.entity{.ts,.js}'],
+  entities: [UserEntity,CategoryEntity,ProductEntity],
   migrations:['dist/db/migrations/*{.ts,.js}'],
   logging:true,
   // synchronize:true
