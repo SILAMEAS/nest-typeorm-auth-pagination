@@ -11,9 +11,9 @@ import { CategoryModule } from "./category/category.module";
 import { ProductModule } from "./product/product.module";
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryService } from "./cloudinary/cloudinary.service";
-import { SocketModule } from './socket/socket.module';
 import { AppService } from "./app.service";
 import { AppController } from "./app.controller";
+import { ChatModule } from "./chat/chat.module";
 
 @Module({
   /** config **/
@@ -23,7 +23,7 @@ import { AppController } from "./app.controller";
     { name: 'long', ttl: 60000, limit: 100 },
   ]),
     CloudinaryModule,
-    SocketModule,
+    ChatModule,
     /** custom **/
     GlobalStateModule,
     CategoryModule,

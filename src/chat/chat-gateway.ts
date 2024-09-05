@@ -6,7 +6,7 @@ import { Server, Socket } from "socket.io";
     origin: '*', // Adjust this according to your needs
   },
 })
-export class SocketGateway implements OnGatewayConnection,OnGatewayDisconnect {
+export class ChatGateway implements OnGatewayConnection,OnGatewayDisconnect {
 
   @WebSocketServer()
   server: Server;
@@ -25,7 +25,7 @@ export class SocketGateway implements OnGatewayConnection,OnGatewayDisconnect {
   }
 
   @SubscribeMessage('newMessage')
-  handleNewMessage(@ConnectedSocket() client: Socket, @MessageBody() message: string) {
-   this.server.emit('message',message as any); // Broadcast the message to all clients
+  handleNewMessage(@ConnectedSocket() client: Socket, @MessageBody() message: any) {
+   this.server.emit('message',message); // Broadcast the message to all clients
   }
 }

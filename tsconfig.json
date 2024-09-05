@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": true,                        // Keep this true if you need declaration files, otherwise set to false
+    "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2021",                         // Good for modern JavaScript
+    "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,                        // Good for faster recompilation
-    "skipLibCheck": true,                       // Skip type checking of library files to speed up compilation
-    "strict": true,                             // Enables strict mode, which includes strictNullChecks and noImplicitAny
-    "forceConsistentCasingInFileNames": true,   // Helps avoid casing errors in imports
-    "noFallthroughCasesInSwitch": true,         // Enforce no fallthrough in switch statements
-    "strictBindCallApply": true                 // Ensure strict checks when using call/apply/bind
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false
   }
 }
