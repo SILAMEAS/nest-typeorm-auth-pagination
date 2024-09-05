@@ -12,6 +12,8 @@ import { ProductModule } from "./product/product.module";
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryService } from "./cloudinary/cloudinary.service";
 import { SocketModule } from './socket/socket.module';
+import { AppService } from "./app.service";
+import { AppController } from "./app.controller";
 
 @Module({
   /** config **/
@@ -28,8 +30,9 @@ import { SocketModule } from './socket/socket.module';
     UsersModule,
     ProductModule,
     AuthModule],
-  controllers: [],
+  controllers: [AppController],
   providers: [
+    AppService,
   {
     provide: APP_GUARD,
     useClass: RolesGuard,
